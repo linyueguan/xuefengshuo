@@ -117,7 +117,65 @@ test("returns a demo answer when no DeepSeek secret is configured", async () => 
   const body = await response.json();
   assert.equal(body.demo, true);
   assert.equal(typeof body.result, "string");
-  assert.ok(body.result.length > 100);
+  assert.ok(body.result.length >= 260 && body.result.length <= 380);
+  assert.match(body.result, /^[^\n]+[。！？?]\n\n/);
+  assert.doesNotMatch(body.result, /(?:购买|下单|库存|优惠|链接|价格)/);
+});
+
+test("keeps demo answers inside the website skill contract", async () => {
+  const worker = await loadWorker();
+  const cases = [
+    {
+      text: "普通家庭，孩子想学金融，到底该不该报？",
+      topic: "application",
+      intensity: "direct",
+      min: 180,
+      max: 260,
+    },
+    {
+      text: "双非本科，考研是不是唯一的翻身机会？",
+      topic: "postgraduate",
+      intensity: "full",
+      min: 360,
+      max: 520,
+    },
+    {
+      text: "工作不喜欢，但又舍不得稳定，怎么办？",
+      topic: "roast",
+      intensity: "sharp",
+      min: 260,
+      max: 380,
+    },
+    {
+      text: "老师你嘴唇发紫，可能心脏不好。",
+      topic: "care",
+      intensity: "full",
+      min: 60,
+      max: 140,
+    },
+  ];
+
+  for (const example of cases) {
+    const response = await worker.fetch(
+      new Request("http://localhost/api/say", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(example),
+      }),
+      runtime,
+      context,
+    );
+
+    assert.equal(response.status, 200);
+    const body = await response.json();
+    assert.equal(body.demo, true);
+    assert.ok(
+      body.result.length >= example.min && body.result.length <= example.max,
+      `${example.topic}/${example.intensity} returned ${body.result.length} characters`,
+    );
+    assert.match(body.result, /^[^\n]+[。！？?]\n\n/);
+    assert.doesNotMatch(body.result, /(?:购买|下单|库存|优惠|链接|价格)/);
+  }
 });
 
 test("rejects prompt-injection instructions before model generation", async () => {
