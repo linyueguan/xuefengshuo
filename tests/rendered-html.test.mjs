@@ -63,6 +63,14 @@ test("server-renders the renamed experience without retired copy", async () => {
 
   const html = await response.text();
   assert.match(html, /<title>张老师说的道理｜先看出口，再谈理想<\/title>/);
+  assert.match(
+    html,
+    /<meta name="theme-color" content="#f5f5f7" media="\(prefers-color-scheme: light\)"\/>/,
+  );
+  assert.match(
+    html,
+    /<meta name="theme-color" content="#0b0b0d" media="\(prefers-color-scheme: dark\)"\/>/,
+  );
   assert.match(html, /张老师说的道理首页/);
   assert.match(html, /你把条件说清楚/);
   assert.match(html, /我替你摊开/);
