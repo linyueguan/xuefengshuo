@@ -44,7 +44,9 @@ function normalizeForDetection(value: string) {
   return value
     .normalize("NFKC")
     .replace(/[\u200B-\u200D\u2060\uFEFF]/g, "")
-    .replace(/\s+/g, " ")
+    .replace(/\r\n?/g, "\n")
+    .replace(/[^\S\n]+/g, " ")
+    .replace(/\n{2,}/g, "\n")
     .trim();
 }
 

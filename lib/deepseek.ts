@@ -1,5 +1,6 @@
 const RETRY_DELAY_MS = 800;
-const REQUEST_TIMEOUT_MS = 45_000;
+const FIRST_ATTEMPT_TIMEOUT_MS = 22_000;
+const TOTAL_REQUEST_TIMEOUT_MS = 45_000;
 
 type RetryOptions = {
   fetchImpl?: typeof fetch;
@@ -38,6 +39,20 @@ function retryDelay(response: Response) {
 const defaultSleep = (milliseconds: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
 
+function timeoutError() {
+  return new DOMException("DeepSeek request timed out", "TimeoutError");
+}
+
+async function waitBeforeRetry(
+  milliseconds: number,
+  deadline: number,
+  sleep: (milliseconds: number) => Promise<void>,
+) {
+  const remaining = deadline - Date.now();
+  if (remaining <= 1) throw timeoutError();
+  await sleep(Math.min(milliseconds, remaining - 1));
+}
+
 export async function fetchDeepSeekWithRetry(
   input: string,
   init: RequestInit,
@@ -45,33 +60,41 @@ export async function fetchDeepSeekWithRetry(
 ) {
   const fetchImpl = options.fetchImpl ?? fetch;
   const sleep = options.sleep ?? defaultSleep;
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const deadline = Date.now() + TOTAL_REQUEST_TIMEOUT_MS;
 
-  try {
-    for (let attempt = 0; attempt < 2; attempt += 1) {
-      try {
-        const response = await fetchImpl(input, {
-          ...init,
-          signal: controller.signal,
-        });
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const remaining = deadline - Date.now();
+    if (remaining <= 0) throw timeoutError();
 
-        if (attempt === 0 && shouldRetryStatus(response.status)) {
-          const delay = retryDelay(response);
-          await response.body?.cancel();
-          await sleep(delay);
-          continue;
-        }
+    const controller = new AbortController();
+    const attemptTimeout = setTimeout(
+      () => controller.abort(),
+      attempt === 0
+        ? Math.min(FIRST_ATTEMPT_TIMEOUT_MS, remaining)
+        : remaining,
+    );
 
-        return response;
-      } catch (error) {
-        if (attempt === 1 || controller.signal.aborted) throw error;
-        await sleep(RETRY_DELAY_MS);
+    try {
+      const response = await fetchImpl(input, {
+        ...init,
+        signal: controller.signal,
+      });
+
+      if (attempt === 0 && shouldRetryStatus(response.status)) {
+        const delay = retryDelay(response);
+        await response.body?.cancel();
+        await waitBeforeRetry(delay, deadline, sleep);
+        continue;
       }
-    }
 
-    throw new Error("DeepSeek request failed after retry");
-  } finally {
-    clearTimeout(timeout);
+      return response;
+    } catch (error) {
+      if (attempt === 1) throw error;
+      await waitBeforeRetry(RETRY_DELAY_MS, deadline, sleep);
+    } finally {
+      clearTimeout(attemptTimeout);
+    }
   }
+
+  throw new Error("DeepSeek request failed after retry");
 }
