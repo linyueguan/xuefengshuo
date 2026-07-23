@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import type { Intensity, Topic } from "@/lib/xuefeng";
 
 type TopicOption = {
@@ -84,14 +84,10 @@ export default function Home() {
   const [shared, setShared] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
 
-  const activeTopic =
-    useMemo(() => topics.find((item) => item.id === topic), [topic]) ?? topics[0];
+  const activeTopic = topics.find((item) => item.id === topic) ?? topics[0];
 
   const activeIntensity =
-    useMemo(
-      () => intensities.find((item) => item.id === intensity),
-      [intensity],
-    ) ?? intensities[1];
+    intensities.find((item) => item.id === intensity) ?? intensities[1];
 
   useEffect(() => {
     if (!loading) return;
@@ -176,7 +172,7 @@ export default function Home() {
   async function shareResult() {
     if (!result) return;
     const shareData = {
-      title: "雪峰老师怎么说",
+      title: "张老师说的道理",
       text: result,
       url: window.location.href,
     };
@@ -202,9 +198,9 @@ export default function Home() {
     <div className="site-shell">
       <header className="nav-wrap">
         <nav className="nav-island" aria-label="主导航">
-          <a className="brand" href="#top" aria-label="雪峰老师怎么说首页">
+          <a className="brand" href="#top" aria-label="张老师说的道理首页">
             <span className="brand-orb" aria-hidden="true" />
-            <span>雪峰老师怎么说</span>
+            <span>张老师说的道理</span>
           </a>
           <a className="nav-link" href="#examples">
             看看怎么问
@@ -214,28 +210,24 @@ export default function Home() {
 
       <main id="top">
         <section className="hero">
-          <div className="eyebrow">
-            <span className="status-dot" aria-hidden="true" />
-            问题校准器
-          </div>
           <h1>
-            你负责把条件说清楚。
-            <span>现实，我替你摊开。</span>
+            你负责把条件说清楚
+            <span>现实，我替你摊开</span>
           </h1>
           <p className="hero-copy">
-            不拿专业名字当就业合同，不拿成功个例替普通家庭下注。
+            不拿专业名字当就业合同，不拿成功个例替普通家庭下注
             <br />
-            先看出口，再谈理想。
+            先看出口，再谈理想
           </p>
         </section>
 
-        <section className="experience" aria-label="雪峰老师回答生成器">
+        <section className="experience" aria-label="张老师回答生成器">
           <div className="experience-core">
             <form className="question-panel" onSubmit={askTeacher}>
               <div className="panel-heading">
                 <div>
                   <span className="panel-kicker">01 · 把话说明白</span>
-                  <h2>你到底在纠结什么？</h2>
+                  <h2>想听张老师说点什么？</h2>
                 </div>
                 <span className="word-count">{text.length}/500</span>
               </div>
@@ -294,7 +286,7 @@ export default function Home() {
                 type="submit"
                 disabled={text.trim().length < 4 || loading}
               >
-                <span>{loading ? loadingLines[loadingIndex] : "让老师说两句"}</span>
+                <span>{loading ? loadingLines[loadingIndex] : "张老师说两句"}</span>
                 <span className="action-orb" aria-hidden="true">
                   {loading ? <span className="spinner" /> : "↗"}
                 </span>
@@ -350,7 +342,7 @@ export default function Home() {
         <section className="examples-section" id="examples">
           <div className="section-heading">
             <span className="panel-kicker">02 · 别问空话</span>
-            <h2>条件越具体，判断越值钱。</h2>
+            <h2>条件越具体，判断越值钱</h2>
           </div>
           <div className="example-scroller">
             {activeTopic.examples.map((example) => (
@@ -379,7 +371,7 @@ export default function Home() {
 
       <footer>
         <span>AI 表达实验 · 非本人原话</span>
-        <span>把刀口对准幻想，不对准人的尊严。</span>
+        <span>把刀口对准幻想，不对准人的尊严</span>
       </footer>
     </div>
   );

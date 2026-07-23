@@ -24,13 +24,13 @@ export async function generateMetadata(): Promise<Metadata> {
   const socialImage = `${origin}/og.png`;
 
   return {
-    title: "雪峰老师怎么说｜先看出口，再谈理想",
+    title: "张老师说的道理｜先看出口，再谈理想",
     description:
       "把你的志愿、考研、就业和生活问题说具体，让老师先拆幻想，再给普通人能执行的现实路线。",
     metadataBase: new URL(origin),
     openGraph: {
-      title: "雪峰老师怎么说",
-      description: "先看出口，再谈理想。把问题说清楚，现实替你摊开。",
+      title: "张老师说的道理",
+      description: "先看出口，再谈理想，把问题说清楚，现实替你摊开",
       type: "website",
       url: origin,
       locale: "zh_CN",
@@ -39,14 +39,14 @@ export async function generateMetadata(): Promise<Metadata> {
           url: socialImage,
           width: 1200,
           height: 630,
-          alt: "雪峰老师怎么说",
+          alt: "张老师说的道理",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "雪峰老师怎么说",
-      description: "先看出口，再谈理想。",
+      title: "张老师说的道理",
+      description: "先看出口，再谈理想",
       images: [socialImage],
     },
   };

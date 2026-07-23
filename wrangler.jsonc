@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "xuefengshuo",
+  "workers_dev": true,
+  "preview_urls": true,
+  "compatibility_date": "2026-07-23",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "main": "./worker/index.ts",
+  "assets": {
+    "directory": "dist/client",
+    "not_found_handling": "none",
+    "binding": "ASSETS"
+  },
+  "images": {
+    "binding": "IMAGES"
+  },
+  "vars": {
+    "DEEPSEEK_MODEL": "deepseek-chat",
+    "MAX_OUTPUT_TOKENS": "900"
+  }
+}
