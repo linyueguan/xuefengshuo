@@ -1145,23 +1145,27 @@ footer > a {
   }
 
   .intensity-options {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     width: 100%;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scrollbar-width: none;
-    scroll-snap-type: x proximity;
-  }
-
-  .intensity-options::-webkit-scrollbar {
-    display: none;
+    overflow: visible;
   }
 
   .intensity-option {
-    min-width: 142px;
-    min-height: 70px;
-    flex: 1 0 142px;
-    scroll-snap-align: start;
+    min-width: 0;
+    min-height: 74px;
+    padding: 10px 5px;
+    text-align: center;
+  }
+
+  .intensity-option span {
+    font-size: 11px;
+    line-height: 1.35;
+    white-space: normal;
+  }
+
+  .intensity-option small {
+    font-size: 8px;
   }
 
   .input-label {
@@ -1275,30 +1279,23 @@ footer > a {
   }
 
   .example-list {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr;
     width: 100%;
-    gap: 9px;
+    gap: 8px;
     margin-top: 27px;
-    overflow-x: auto;
+    overflow: visible;
     border-top: 0;
-    overscroll-behavior-x: contain;
-    scrollbar-width: none;
-    scroll-snap-type: x mandatory;
-  }
-
-  .example-list::-webkit-scrollbar {
-    display: none;
   }
 
   .example-list button,
   .example-list button:nth-child(even) {
-    min-width: min(268px, calc(100vw - 54px));
-    min-height: 112px;
-    flex: 0 0 min(268px, calc(100vw - 54px));
-    align-items: flex-end;
-    padding: 17px;
+    width: 100%;
+    min-width: 0;
+    min-height: 72px;
+    align-items: center;
+    padding: 14px 16px;
     border: 1px solid var(--line-strong);
-    scroll-snap-align: start;
   }
 
   .example-list button:nth-child(odd) {
