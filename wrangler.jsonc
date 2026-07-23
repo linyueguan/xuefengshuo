@@ -16,6 +16,22 @@
   "images": {
     "binding": "IMAGES"
   },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "RATE_LIMITER",
+        "class_name": "RateLimiter"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "RateLimiter"
+      ]
+    }
+  ],
   "vars": {
     "DEEPSEEK_MODEL": "deepseek-chat",
     "MAX_OUTPUT_TOKENS": "900"

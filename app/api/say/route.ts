@@ -1,3 +1,5 @@
+import { fetchDeepSeekWithRetry } from "@/lib/deepseek";
+import { detectPromptInjection } from "@/lib/prompt-injection";
 import {
   buildUserPrompt,
   cleanModelOutput,
@@ -56,6 +58,18 @@ export async function POST(request: Request) {
     );
   }
 
+  const injection = detectPromptInjection(text);
+  if (injection.detected) {
+    return Response.json(
+      {
+        error:
+          "这个输入包含试图改变回答规则的指令，请只保留你想咨询的问题。",
+        code: "PROMPT_INJECTION",
+      },
+      { status: 400 },
+    );
+  }
+
   const apiKey = process.env.DEEPSEEK_API_KEY?.trim();
 
   if (!apiKey) {
@@ -65,28 +79,27 @@ export async function POST(request: Request) {
     });
   }
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 45_000);
-
   try {
-    const response = await fetch("https://api.deepseek.com/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
+    const response = await fetchDeepSeekWithRetry(
+      "https://api.deepseek.com/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: process.env.DEEPSEEK_MODEL || "deepseek-chat",
+          temperature: 0.78,
+          max_tokens: Number(process.env.MAX_OUTPUT_TOKENS || 900),
+          stream: false,
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: buildUserPrompt(text, topic, intensity) },
+          ],
+        }),
       },
-      body: JSON.stringify({
-        model: process.env.DEEPSEEK_MODEL || "deepseek-chat",
-        temperature: 0.78,
-        max_tokens: Number(process.env.MAX_OUTPUT_TOKENS || 900),
-        stream: false,
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: buildUserPrompt(text, topic, intensity) },
-        ],
-      }),
-      signal: controller.signal,
-    });
+    );
 
     if (!response.ok) {
       throw new Error(`model-status-${response.status}`);
@@ -105,7 +118,5 @@ export async function POST(request: Request) {
       result: createDemoAnswer(text, topic, intensity),
       demo: true,
     });
-  } finally {
-    clearTimeout(timeout);
   }
 }
