@@ -64,8 +64,8 @@ test("server-renders the renamed experience without retired copy", async () => {
   const html = await response.text();
   assert.match(html, /<title>张老师说的道理｜先看出口，再谈理想<\/title>/);
   assert.match(html, /张老师说的道理首页/);
-  assert.match(html, /你负责把条件说清楚/);
-  assert.match(html, /现实，我替你摊开/);
+  assert.match(html, /你把条件说清楚/);
+  assert.match(html, /我替你摊开/);
   assert.match(html, /想听张老师说点什么？/);
   assert.match(html, /张老师说两句/);
   assert.match(
@@ -81,8 +81,8 @@ test("server-renders the renamed experience without retired copy", async () => {
     "雪峰老师" + "怎么说",
     "问题" + "校准器",
     "让老师" + "说两句",
-    "你负责把条件说清楚" + "。",
-    "现实，我替你摊开" + "。",
+    "你负责把条件说清楚",
+    "现实，我替你摊开",
   ];
   for (const copy of retiredCopy) {
     assert.ok(!html.includes(copy));

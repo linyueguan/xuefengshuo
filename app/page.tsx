@@ -222,8 +222,8 @@ export default function Home() {
       <main id="top">
         <section className="hero">
           <h1>
-            你负责把条件说清楚
-            <span>现实，我替你摊开</span>
+            你把条件说清楚
+            <span>我替你摊开</span>
           </h1>
           <p className="hero-copy">
             不拿专业名字当就业合同，不拿成功个例替普通家庭下注
