@@ -72,6 +72,19 @@ const starterAnswer = [
   "把家庭条件、目标岗位、城市和能承受的试错成本摆出来，答案才有资格出现。",
 ];
 
+function splitAnswer(value: string) {
+  const normalized = value.trim();
+  const firstSentence =
+    normalized.match(/^([\s\S]*?[。！？!?]+[”’"'）】》]*)/)?.[1] ??
+    normalized;
+  const remaining = normalized.slice(firstSentence.length).trim();
+
+  return {
+    lead: firstSentence,
+    paragraphs: remaining.split(/\n{2,}/).filter(Boolean),
+  };
+}
+
 export default function Home() {
   const [topic, setTopic] = useState<Topic>("application");
   const [intensity, setIntensity] = useState<Intensity>("sharp");
@@ -190,9 +203,7 @@ export default function Home() {
     }
   }
 
-  const paragraphs = (result || starterAnswer.join("\n\n"))
-    .split(/\n{2,}/)
-    .filter(Boolean);
+  const displayedAnswer = splitAnswer(result || starterAnswer.join("\n\n"));
 
   return (
     <div className="site-shell">
@@ -321,7 +332,8 @@ export default function Home() {
                   张
                 </div>
                 <div className="answer-copy">
-                  {paragraphs.map((paragraph, index) => (
+                  <p className="answer-lead">{displayedAnswer.lead}</p>
+                  {displayedAnswer.paragraphs.map((paragraph, index) => (
                     <p key={`${paragraph.slice(0, 12)}-${index}`}>{paragraph}</p>
                   ))}
                 </div>

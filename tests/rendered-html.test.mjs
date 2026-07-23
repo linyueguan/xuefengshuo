@@ -68,6 +68,14 @@ test("server-renders the renamed experience without retired copy", async () => {
   assert.match(html, /现实，我替你摊开/);
   assert.match(html, /想听张老师说点什么？/);
   assert.match(html, /张老师说两句/);
+  assert.match(
+    html,
+    /<p class="answer-lead">先别急着问“该不该”。<\/p>/,
+  );
+  assert.match(
+    html,
+    /<p>把家庭条件、目标岗位、城市和能承受的试错成本摆出来，答案才有资格出现。<\/p>/,
+  );
 
   const retiredCopy = [
     "雪峰老师" + "怎么说",
