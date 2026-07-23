@@ -2,7 +2,7 @@
   "name": "xuefengshuo",
   "version": "0.1.0",
   "private": true,
-  "description": "张老师式现实建议生成网站",
+  "description": "把普通话翻成张式表达的娱乐转换器",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/linyueguan/xuefengshuo.git"
@@ -17,6 +17,7 @@
     "deploy": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext deploy",
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern .wrangler --ignore-pattern worker-configuration.d.ts",
+    "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {

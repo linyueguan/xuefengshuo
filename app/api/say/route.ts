@@ -10,6 +10,10 @@ import {
 } from "@/lib/xuefeng";
 
 const topics = new Set<Topic>([
+  "general",
+  "study",
+  "work",
+  "reply",
   "application",
   "postgraduate",
   "roast",
