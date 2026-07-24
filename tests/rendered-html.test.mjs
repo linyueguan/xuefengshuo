@@ -193,6 +193,30 @@ test("keeps demo answers inside the website skill contract", async () => {
   }
 });
 
+test("uses entertainment accents without turning answers into meme piles", async () => {
+  const worker = await loadWorker();
+  const response = await worker.fetch(
+    new Request("http://localhost/api/say", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        text: "我不想找工作，先考研拖三年，学历高了总有好处吧？",
+        topic: "postgraduate",
+        intensity: "sharp",
+      }),
+    }),
+    runtime,
+    context,
+  );
+
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.equal(body.demo, true);
+  assert.match(body.result, /不是上岸，是给焦虑续费/);
+  assert.match(body.result, /目标岗位|实习|技能/);
+  assert.doesNotMatch(body.result, /(?:yyds|绝绝子|栓Q)/i);
+});
+
 test("rejects prompt-injection instructions before model generation", async () => {
   const worker = await loadWorker();
   const attacks = [
