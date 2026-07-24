@@ -8,7 +8,7 @@ const description = "输入一句普通话，看看张老师会怎么说。";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#fbf7ef",
+  themeColor: "#f5f0e6",
 };
 
 export const metadata: Metadata = {

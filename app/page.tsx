@@ -340,24 +340,44 @@ export default function Home() {
 
       <main id="main-content">
         <section className="hero" id="top">
-          <p className="hero-kicker">
-            <span aria-hidden="true">●</span>
-            娱乐表达转换器
-          </p>
-          <h1>
-            <span>张老师</span>会怎么说？
-          </h1>
-          <p className="hero-copy hero-copy-desktop">
-            输入一句普通话，张老师来帮你说。
-            <br />
-            先说结论，再算现实账，最后反问一句。
-          </p>
-          <p className="hero-copy hero-copy-mobile">
-            输入一句话，看看张老师怎么说。
-          </p>
-          <p className="hero-disclaimer">
-            仅模拟公开表达特征，与本人及相关机构无关。
-          </p>
+          <div className="hero-grid">
+            <div className="hero-folio" aria-hidden="true">
+              <span>VOL. 01</span>
+              <i />
+              <span>现实表达实验</span>
+            </div>
+
+            <div className="hero-body">
+              <p className="hero-kicker">
+                <span aria-hidden="true">●</span>
+                娱乐表达转换器
+              </p>
+              <h1>
+                <span>张老师</span>会怎么说？
+              </h1>
+              <p className="hero-copy hero-copy-desktop">
+                输入一句普通话，张老师来帮你说。
+                <br />
+                先说结论，再算现实账，最后反问一句。
+              </p>
+              <p className="hero-copy hero-copy-mobile">
+                输入一句话，看看张老师怎么说。
+              </p>
+              <p className="hero-disclaimer">
+                仅模拟公开表达特征，与本人及相关机构无关。
+              </p>
+            </div>
+
+            <aside className="hero-note" aria-label="表达原则">
+              <span>EDITOR&apos;S NOTE</span>
+              <p>
+                先把话说明白，
+                <br />
+                再谈体面。
+              </p>
+              <i aria-hidden="true">别端着</i>
+            </aside>
+          </div>
         </section>
 
         <section
@@ -369,6 +389,9 @@ export default function Home() {
             <span>把普通话翻译成张式表达</span>
             <span>01 / 开麦</span>
           </div>
+          <span className="translator-hand-note" aria-hidden="true">
+            先别找补
+          </span>
 
           <div className="translator-grid">
             <form className="input-panel" onSubmit={askTeacher}>
@@ -557,6 +580,9 @@ export default function Home() {
             <span>02 / 随手一试</span>
             <h2>不知道说什么？拿这些试试</h2>
             <p>点一下只会填入，不会自动生成，也不会消耗接口次数。</p>
+            <i className="section-scribble" aria-hidden="true">
+              随便点
+            </i>
           </div>
           <div className="example-list" aria-label="示例输入">
             {examples.map((example) => (
@@ -573,26 +599,29 @@ export default function Home() {
         </section>
 
         <section className="recipe-section" id="recipe">
-          <div className="section-heading recipe-heading">
-            <span>03 / 玩法说明</span>
-            <h2>张老师配方</h2>
-          </div>
-          <div className="recipe-list">
-            <article>
-              <span>01</span>
-              <h3>先下结论</h3>
-              <p>不绕弯，先告诉你问题在哪。</p>
-            </article>
-            <article>
-              <span>02</span>
-              <h3>算现实账</h3>
-              <p>把时间、钱、概率和机会成本摆出来。</p>
-            </article>
-            <article>
-              <span>03</span>
-              <h3>反问收尾</h3>
-              <p>最后问一句：这个结果你真能承担吗？</p>
-            </article>
+          <div className="recipe-layout">
+            <div className="section-heading recipe-heading">
+              <span>03 / 玩法说明</span>
+              <h2>张老师配方</h2>
+              <p>没有玄学，就是把问题按顺序说清楚。</p>
+            </div>
+            <div className="recipe-list">
+              <article>
+                <span>01</span>
+                <h3>先下结论</h3>
+                <p>不绕弯，先告诉你问题在哪。</p>
+              </article>
+              <article>
+                <span>02</span>
+                <h3>算现实账</h3>
+                <p>把时间、钱、概率和机会成本摆出来。</p>
+              </article>
+              <article>
+                <span>03</span>
+                <h3>反问收尾</h3>
+                <p>最后问一句：这个结果你真能承担吗？</p>
+              </article>
+            </div>
           </div>
         </section>
       </main>

@@ -69,7 +69,7 @@ test("server-renders the entertainment translator and brand metadata", async () 
   );
   assert.match(
     html,
-    /<meta name="theme-color" content="#fbf7ef"/,
+    /<meta name="theme-color" content="#f5f0e6"/,
   );
   assert.match(html, /rel="canonical" href="https:\/\/xuefengshuo.com"/);
   assert.match(
