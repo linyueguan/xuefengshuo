@@ -80,6 +80,8 @@ test("server-renders the entertainment translator and brand metadata", async () 
   assert.match(html, /alt="雪峰说 Logo"/);
   assert.match(html, /<span>张老师<\/span>会怎么说？/);
   assert.match(html, /输入一句普通话，张老师来帮你说。/);
+  assert.doesNotMatch(html, /class="scene-options"/);
+  assert.doesNotMatch(html, /<legend>场景/);
   assert.match(html, /仅模拟公开表达特征，与本人及相关机构无关。/);
   assert.match(html, /张老师，您说两句/);
   assert.match(html, /张老师正常说/);

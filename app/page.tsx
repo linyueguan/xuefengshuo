@@ -10,24 +10,13 @@ import {
 import { createShareCard } from "@/lib/share-card";
 import type { Intensity, Topic } from "@/lib/xuefeng";
 
-type TopicOption = {
-  id: Topic;
-  title: string;
-};
-
 type IntensityOption = {
   id: Intensity;
   title: string;
   note: string;
 };
 
-const topics: TopicOption[] = [
-  { id: "general", title: "通用" },
-  { id: "study", title: "求学就业" },
-  { id: "work", title: "职场生活" },
-  { id: "reply", title: "帮我回话" },
-  { id: "roast", title: "随便锐评" },
-];
+const DEFAULT_TOPIC: Topic = "general";
 
 const intensities: IntensityOption[] = [
   {
@@ -88,15 +77,13 @@ function splitAnswer(value: string) {
 }
 
 export default function Home() {
-  const [topic, setTopic] = useState<Topic>("general");
   const [intensity, setIntensity] = useState<Intensity>("sharp");
   const [text, setText] = useState("");
   const [lastInput, setLastInput] = useState("");
   const [result, setResult] = useState("");
-  const [resultMeta, setResultMeta] = useState<{
-    topic: Topic;
-    intensity: Intensity;
-  } | null>(null);
+  const [resultIntensity, setResultIntensity] = useState<Intensity | null>(
+    null,
+  );
   const [loading, setLoading] = useState(false);
   const [loadingIndex, setLoadingIndex] = useState(0);
   const [error, setError] = useState("");
@@ -108,8 +95,6 @@ export default function Home() {
   const shareCloseRef = useRef<HTMLButtonElement>(null);
   const shareCardUrlRef = useRef("");
 
-  const activeTopic =
-    topics.find((item) => item.id === topic) ?? topics[0];
   const activeIntensity =
     intensities.find((item) => item.id === intensity) ?? intensities[1];
   const renderedAnswer = splitAnswer(
@@ -184,7 +169,7 @@ export default function Home() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text: value,
-          topic,
+          topic: DEFAULT_TOPIC,
           intensity: nextIntensity,
         }),
       });
@@ -199,7 +184,7 @@ export default function Home() {
 
       setLastInput(value);
       setResult(data.result);
-      setResultMeta({ topic, intensity: nextIntensity });
+      setResultIntensity(nextIntensity);
     } catch (requestError) {
       setError(
         requestError instanceof Error
@@ -304,11 +289,8 @@ export default function Home() {
     setShareCardUrl("");
   }
 
-  const resultTopic =
-    topics.find((item) => item.id === resultMeta?.topic)?.title ??
-    activeTopic.title;
-  const resultIntensity =
-    intensities.find((item) => item.id === resultMeta?.intensity)?.title ??
+  const resultIntensityLabel =
+    intensities.find((item) => item.id === resultIntensity)?.title ??
     activeIntensity.title;
 
   return (
@@ -436,25 +418,6 @@ export default function Home() {
                 </div>
               </div>
 
-              <fieldset className="control-group scene-group">
-                <legend>
-                  场景
-                  <span>可选，默认通用</span>
-                </legend>
-                <div className="scene-options">
-                  {topics.map((item) => (
-                    <button
-                      type="button"
-                      key={item.id}
-                      aria-pressed={topic === item.id}
-                      onClick={() => setTopic(item.id)}
-                    >
-                      {item.title}
-                    </button>
-                  ))}
-                </div>
-              </fieldset>
-
               <button
                 className="primary-action"
                 type="submit"
@@ -501,7 +464,7 @@ export default function Home() {
                       : "等你递话"}
                 </span>
                 <span>
-                  {resultTopic} · {resultIntensity}
+                  {resultIntensityLabel}
                 </span>
               </div>
 

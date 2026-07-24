@@ -568,45 +568,6 @@ main {
   font-variant-numeric: tabular-nums;
 }
 
-.scene-group {
-  margin-top: 25px;
-}
-
-.scene-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.scene-options button {
-  min-height: 34px;
-  padding: 0 12px;
-  border: 1px solid var(--line-strong);
-  border-radius: 48% 52% 46% 54% / 51% 47% 53% 49%;
-  background: transparent;
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    border-color 180ms ease,
-    background-color 180ms ease,
-    color 180ms ease;
-}
-
-.scene-options button:hover {
-  border-color: var(--ink);
-  color: var(--ink);
-}
-
-.scene-options button[aria-pressed="true"] {
-  border-color: var(--red);
-  background: rgba(234, 212, 205, 0.66);
-  color: var(--red-dark);
-  box-shadow: 2px 2px 0 var(--red-soft);
-  transform: rotate(-1deg);
-}
-
 .primary-action {
   position: relative;
   display: flex;
@@ -1508,20 +1469,6 @@ footer > a {
 
   .input-meta {
     padding: 9px 10px;
-  }
-
-  .scene-group {
-    margin-top: 21px;
-  }
-
-  .scene-options {
-    gap: 6px;
-  }
-
-  .scene-options button {
-    min-height: 32px;
-    padding: 0 10px;
-    font-size: 10px;
   }
 
   .primary-action {
