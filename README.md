@@ -57,6 +57,18 @@ npm run deploy
 限流使用 Durable Object 做跨 Cloudflare 节点的一致计数。若限流绑定异常，接口返回
 `503`，不会绕过保护继续消耗 API Key。
 
+## 网站 Skill
+
+网站的表达框架已适配自
+[`alchaincyf/zhangxuefeng-skill`](https://github.com/alchaincyf/zhangxuefeng-skill)。
+上游文本快照保存在 `skills/zhangxuefeng-perspective/`，Cloudflare 实际运行的
+精简、安全适配版位于 `lib/zhangxuefeng-perspective.ts`，并由
+`lib/xuefeng.ts` 合并网站输出合同后发送给 DeepSeek。
+
+运行时保留选择匹配、就业倒推、中位数、不可替代性、家庭条件与最坏情况等
+思维框架；不会加载上游传记或时间线作为回答事实，也不会改变现有限流、安全
+检测和 API 参数。
+
 如果暂时不配置 DeepSeek 密钥，也可以直接部署演示模式：
 
 ```bash

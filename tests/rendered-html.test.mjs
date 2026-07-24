@@ -219,6 +219,31 @@ test("uses entertainment accents without turning answers into meme piles", async
   assert.doesNotMatch(body.result, /(?:yyds|绝绝子|栓Q)/i);
 });
 
+test("keeps the perspective skill in the demo fallback path", async () => {
+  const worker = await loadWorker();
+  const response = await worker.fetch(
+    new Request("http://localhost/api/say", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        text: "我觉得土木工程是个好专业。",
+        topic: "general",
+        intensity: "sharp",
+      }),
+    }),
+    runtime,
+    context,
+  );
+
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.equal(body.demo, true);
+  assert.match(body.result, /中位数/);
+  assert.match(body.result, /就业倒推/);
+  assert.match(body.result, /不可替代性/);
+  assert.match(body.result, /家庭|家里/);
+});
+
 test("rejects prompt-injection instructions before model generation", async () => {
   const worker = await loadWorker();
   const attacks = [
@@ -284,6 +309,64 @@ test("returns 429 with retry metadata when an IP exceeds its limit", async () =>
   assert.equal(body.reason, "window");
   assert.equal(body.dailyRemaining, 48);
 });
+
+test(
+  "sends the website-adapted zhangxuefeng perspective skill to DeepSeek",
+  { concurrency: false },
+  async (t) => {
+    const originalFetch = globalThis.fetch;
+    const originalApiKey = process.env.DEEPSEEK_API_KEY;
+    let systemPrompt = "";
+
+    t.after(() => {
+      globalThis.fetch = originalFetch;
+      if (originalApiKey === undefined) {
+        delete process.env.DEEPSEEK_API_KEY;
+      } else {
+        process.env.DEEPSEEK_API_KEY = originalApiKey;
+      }
+    });
+
+    process.env.DEEPSEEK_API_KEY = "test-key";
+    globalThis.fetch = async (_input, init) => {
+      const requestBody = JSON.parse(String(init?.body));
+      systemPrompt = requestBody.messages[0].content;
+
+      return Response.json({
+        choices: [{ message: { content: "先看普通人的出口，再决定值不值得下注。" } }],
+      });
+    };
+
+    const worker = await loadWorker();
+    const response = await worker.fetch(
+      new Request("http://localhost/api/say", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "cf-connecting-ip": "203.0.113.13",
+        },
+        body: JSON.stringify({
+          text: "我觉得土木工程是个好专业",
+          topic: "general",
+          intensity: "sharp",
+        }),
+      }),
+      runtime,
+      context,
+    );
+
+    assert.equal(response.status, 200);
+    assert.match(systemPrompt, /alchaincyf\/zhangxuefeng-skill/);
+    assert.match(systemPrompt, /选择大于努力/);
+    assert.match(systemPrompt, /就业倒推/);
+    assert.match(systemPrompt, /中位数/);
+    assert.match(systemPrompt, /不可替代性/);
+    assert.match(systemPrompt, /家庭条件/);
+    assert.match(systemPrompt, /不编造.*现实数据/);
+    assert.doesNotMatch(systemPrompt, /2026年3月24日|心源性猝死/);
+    assert.doesNotMatch(systemPrompt, /你就是张雪峰|作为张雪峰本人/);
+  },
+);
 
 test("retries transient DeepSeek responses and exceptions once", { concurrency: false }, async (t) => {
   const originalFetch = globalThis.fetch;
